@@ -33,25 +33,55 @@ namespace _3Y_2324_EDP_Demo_Enigma3
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if(initialState) 
+            string content = lblInput.Content.ToString();
+
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             {
-                initialState = false;
-                lblInput.Content = KeyManager(e.Key);
+                KeyManager.ShiftPressed = false;
+            }
+
+            if (e.Key == Key.CapsLock)
+            {
+                KeyManager.CapsLockPressed = !KeyManager.CapsLockPressed;
+            }
+
+
+
+            if (initialState) 
+            {
+                char? key = KeyManager.MapKey(e.Key);
+                
+                if (e.Key == Key.Back && content != "")
+                {
+                    lblInput.Content = content.Remove(content.Length - 1);
+                }
+                else if (key != null)
+                {
+                    initialState = false;
+                    lblInput.Content = KeyManager.MapKey(e.Key);
+                }
             }
             else
-                lblInput.Content += KeyManager(e.Key) + "";
+            {
+                char? key = KeyManager.MapKey(e.Key);
+
+                if (e.Key == Key.Back && content != "")
+                {
+                    lblInput.Content = content.Remove(content.Length - 1);
+                }
+                else if (key != null)
+                {
+                    lblInput.Content += KeyManager.MapKey(e.Key).ToString();
+                }
+            }
         }
 
-        private char KeyManager(Key input)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            char retVal = ' ';
-
-            if (input == Key.Space)
-                retVal = ' ';
-            else
-                retVal = input.ToString()[0];
-
-            return retVal;
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                KeyManager.ShiftPressed = true;
+            }
         }
     }
 }
